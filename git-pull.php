@@ -1,6 +1,6 @@
 <?php
 
 // автообновление из репы
-exec('git pull', $output);
+exec('cd ~/bot22.lisbot.ru && git pull', $output);
 
 echo $output;
