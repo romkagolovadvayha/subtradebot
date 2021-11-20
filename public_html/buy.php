@@ -4,7 +4,6 @@ require_once(__DIR__ . '/../vendor/autoload.php');
 
 $logger        = new TRADEBOT\Logger(__DIR__ . "/logs/buy.txt");
 $config        = \TRADEBOT\Config::getInstance();
-$repository    = new \TRADEBOT\TradeBotRepository($config->PDO);
 $bot = \TRADEBOT\GlobalBot::getBotSettings();
 $gateApiConfig = \GateApi\Configuration::getDefaultConfiguration()
     ->setSecret($bot['apiSecretKey'])
@@ -19,11 +18,6 @@ $procMax     = 50; // buy_check_proc_max
 $procMin     = -10; // buy_check_proc_min
 $amount      = 10;
 $pair        = $toCurrency . '_' . $inCurrency;
-
-if (empty($repository->getCurrency($toCurrency))) {
-	$createDate = new \DateTime();
-	$repository->addCurrency($toCurrency, $createDate->format('Y-m-d H:i:s'));
-}
 
 $associate_array['currency_pair'] = $pair; // string | Currency pair
 $associate_array['limit']
@@ -81,7 +75,7 @@ $logger->execute("Создаем ордер на покупку...");
 
 $sumBuy   = $sumNow * 1.005; // buy_proc_price
 $countBuy = round(($balance / $sumBuy) * 0.98, 2);
-$repository->updateCurrency($toCurrency, $sumBuy);
+\TRADEBOT\SumMax::set($sumBuy);
 
 $result = [
     'sumBuy' => $sumBuy,
