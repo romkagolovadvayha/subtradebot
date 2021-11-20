@@ -1,0 +1,12 @@
+{
+  "require": {
+    "gateio/gateapi-php": "5.20.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "TRADEBOT\\": "classes/"
+    }
+  },
+  "name": "trade/bot",
+  "description": "trade bot"
+}
