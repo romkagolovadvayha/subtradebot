@@ -4,7 +4,7 @@ namespace TRADEBOT;
 
 class GlobalBot
 {
-    public static function getBotSettings($message)
+    public static function getBotSettings()
     {
         $config = \TRADEBOT\Config::getInstance();
         $url = $config->settingApp->bot_api . '/getBotSettings.php';
