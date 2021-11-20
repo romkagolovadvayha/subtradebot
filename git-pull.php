@@ -1,3 +1,6 @@
 <?php
 
-exec('git pull');
+// автообновление из репы
+exec('git pull', $output);
+
+echo $output;
