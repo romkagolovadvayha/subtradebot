@@ -83,7 +83,7 @@ $result = [
 ];
 
 $logger->execute(json_encode($result));
-//куплю не все для тестов хватит 10%
+
 $order    = (new \GateApi\Model\Order())
     ->setAmount($countBuy)
     ->setCurrencyPair($pair)
@@ -107,7 +107,7 @@ for ($i = 0; $i < 3; $i++) {
 	$logger->execute("Проверка баланса валюты $toCurrency = $balanceTo!");
   	if ($balanceTo > 0) {
       $logger->execute("Создаем ордер на продажу...");
-      $sumSell = $sumBuy * 3;
+      $sumSell = $sumBuy * 1.75;
       $order   = (new \GateApi\Model\Order())
           ->setAmount($balanceTo)
           ->setCurrencyPair($pair)
