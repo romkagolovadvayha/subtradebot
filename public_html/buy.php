@@ -89,9 +89,10 @@ $order    = (new \GateApi\Model\Order())
     ->setCurrencyPair($pair)
     ->setPrice($sumBuy)
     ->setSide('buy');
-$logger->execute(json_encode($order));
+
 try {
-    $apiInstance->createOrder($order);
+    $createOrder = $apiInstance->createOrder($order);
+    $logger->execute("buy createOrder = " . json_encode($createOrder));
     $lg = "Купили $toCurrency за $sumBuy";
     $logger->execute($lg);
     \TRADEBOT\Telegram::send($lg);
@@ -114,7 +115,8 @@ for ($i = 0; $i < 3; $i++) {
           ->setPrice($sumSell)
           ->setSide('sell');
       try {
-          $apiInstance->createOrder($order);
+          $createOrder = $apiInstance->createOrder($order);
+          $logger->execute("sell createOrder = " . json_encode($createOrder));
           $lg = "Выставили на продажу $toCurrency за $sumSell";
           $logger->execute($lg);
       } catch (\Exception $e) {
