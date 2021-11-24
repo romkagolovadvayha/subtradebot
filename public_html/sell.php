@@ -25,8 +25,8 @@ foreach ($listAllOpenOrders as $openOrders) {
     $pair = $openOrders->getCurrencyPair();
     $pairTo = explode('_', $pair)[0];
     $associate_array['currency_pair'] = $pair; // string | Currency pair
-    $associate_array['limit'] = 5; // int | Maximum recent data points returned. `limit` is conflicted with `from` and `to`. If either `from` or `to` is specified, request will be rejected.
-    $associate_array['interval'] = '1m'; // string | Interval time between data points
+    $associate_array['limit'] = 2; // int | Maximum recent data points returned. `limit` is conflicted with `from` and `to`. If either `from` or `to` is specified, request will be rejected.
+    $associate_array['interval'] = '10s'; // string | Interval time between data points
     $history = $apiInstance->listMyTrades($associate_array);
     $oldSum = $history[0]->getPrice();
     $listCandlesticks = $apiInstance->listCandlesticks($associate_array);
