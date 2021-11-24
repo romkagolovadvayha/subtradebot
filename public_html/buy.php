@@ -16,13 +16,13 @@ $inCurrency  = $_REQUEST['in'];
 $toCurrency  = $_REQUEST['to'];
 $procMax     = 30; // buy_check_proc_max
 $procMin     = -10; // buy_check_proc_min
-$amount      = 10;
+
 $pair        = $toCurrency . '_' . $inCurrency;
 
 $associate_array['currency_pair'] = $pair; // string | Currency pair
 $associate_array['limit']
                                   = $limit; // int | Maximum recent data points returned. `limit` is conflicted with `from` and `to`. If either `from` or `to` is specified, request will be rejected.
-$associate_array['interval']      = '1m'; // string | Interval time between data points
+$associate_array['interval']      = '5m'; // string | Interval time between data points
 
 $logger->execute('Проверка на наличие пары в gate.io');
 $logger->execute('Пара существует');
@@ -55,8 +55,7 @@ if ($diffSumProc > $procMax || $diffSumProc < $procMin) {
     exit;
 }
 
-$spotAccount = $apiInstance->listSpotAccounts(['currency' => 'USDT']);
-$balance     = $spotAccount[0]->getAvailable();
+$balance     = $bot['balance'];
 $logger->execute("Баланс на USDT счете: $balance");
 $logger->execute("Создаем ордер на покупку...");
 
