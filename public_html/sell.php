@@ -51,8 +51,14 @@ foreach ($listAllOpenOrders as $openOrders) {
                     ->setCurrencyPair($pair)
                     ->setPrice($newSum)
                     ->setSide('sell');
-            $apiInstance->createOrder($order);
-            $logger->execute("Стоп торги по паре $pair, продали!");
+            try {
+                $apiInstance->createOrder($order);
+                $logger->execute("Стоп торги по паре $pair, выставляем ордер на продажу!");
+            } catch (\Exception $e) {
+                $logger->execute("Ошибка при создании ордера на продажу!");
+                $apiInstance->createOrder($order);
+                $logger->execute($e->getCode() . ": " . $e->getMessage());
+            }
         }
         \TRADEBOT\Telegram::send($logger->getTotalLogs());
     }

@@ -55,10 +55,6 @@ if ($diffSumProc > $procMax || $diffSumProc < $procMin) {
     exit;
 }
 
-$spotAccount = $apiInstance->listSpotAccounts(['currency' => $toCurrency]);
-$balanceTo   = $spotAccount[0]->getAvailable();
-$logger->execute("Баланс на $toCurrency счете: $balanceTo!");
-
 $spotAccount = $apiInstance->listSpotAccounts(['currency' => 'USDT']);
 $balance     = $spotAccount[0]->getAvailable();
 $logger->execute("Баланс на USDT счете: $balance");
@@ -93,11 +89,11 @@ try {
     exit;
 }
 
-for ($i = 0; $i < 3; $i++) {
+for ($i = 0; $i < 40; $i++) {
     $spotAccount = $apiInstance->listSpotAccounts(['currency' => $toCurrency]);
     $balanceTo   = $spotAccount[0]->getAvailable();
 	$logger->execute("Проверка баланса валюты $toCurrency = $balanceTo!");
-  	if ($balanceTo > 0) {
+  	if ($balanceTo > $countBuy * 0.8) {
       $logger->execute("Создаем ордер на продажу...");
       $sumSell = $sumBuy * 1.75;
       $order   = (new \GateApi\Model\Order())
@@ -110,11 +106,10 @@ for ($i = 0; $i < 3; $i++) {
           $logger->execute("sell createOrder = " . json_encode($createOrder));
           $lg = "Выставили на продажу $toCurrency за $sumSell";
           $logger->execute($lg);
+          break;
       } catch (\Exception $e) {
           $logger->execute($e->getCode() . ": " . $e->getMessage());
       }
-    } else {
-      break; 
     }
     sleep(1);
 }
