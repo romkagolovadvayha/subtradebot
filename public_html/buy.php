@@ -89,11 +89,12 @@ try {
     exit;
 }
 
+sleep(2);
 for ($i = 0; $i < 40; $i++) {
     $spotAccount = $apiInstance->listSpotAccounts(['currency' => $toCurrency]);
     $balanceTo   = $spotAccount[0]->getAvailable();
 	$logger->execute("Проверка баланса валюты $toCurrency = $balanceTo!");
-  	if ($balanceTo > $countBuy * 0.8) {
+  	if ($balanceTo > $countBuy * 0.5) {
       $logger->execute("Создаем ордер на продажу...");
       $sumSell = $sumBuy * 1.75;
       $order   = (new \GateApi\Model\Order())
