@@ -25,15 +25,6 @@ $associate_array['limit']
 $associate_array['interval']      = '1m'; // string | Interval time between data points
 
 $logger->execute('Проверка на наличие пары в gate.io');
-// проверка на наличие пары в gate.io
-try {
-    $listCurrencyPairs = $apiInstance->getCurrencyPair($pair);
-} catch (\Exception $ex) {
-    $lg = "Ошибка: $pair пары нет в gate.io";
-    $logger->execute($lg);
-    \TRADEBOT\Telegram::send($lg);
-    exit;
-}
 $logger->execute('Пара существует');
 
 // считаем нужно ли купить
