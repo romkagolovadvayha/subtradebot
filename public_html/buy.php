@@ -10,8 +10,6 @@ $gateApiConfig = \GateApi\Configuration::getDefaultConfiguration()
     ->setKey($bot['apiKey']);
 
 $apiInstance = new GateApi\Api\SpotApi(new GuzzleHttp\Client(), $gateApiConfig);
-$apiWallet   = new GateApi\Api\WalletApi(new GuzzleHttp\Client(), $gateApiConfig);
-$limit       = 2; // последние 2 минуты buy_check_proc_minutes
 $inCurrency  = $_REQUEST['in'];
 $toCurrency  = $_REQUEST['to'];
 $procMax     = 30; // buy_check_proc_max
@@ -20,8 +18,7 @@ $procMin     = -10; // buy_check_proc_min
 $pair        = $toCurrency . '_' . $inCurrency;
 
 $associate_array['currency_pair'] = $pair; // string | Currency pair
-$associate_array['limit']
-                                  = $limit; // int | Maximum recent data points returned. `limit` is conflicted with `from` and `to`. If either `from` or `to` is specified, request will be rejected.
+$associate_array['limit'] = 2; // int | Maximum recent data points returned. `limit` is conflicted with `from` and `to`. If either `from` or `to` is specified, request will be rejected.
 $associate_array['interval']      = '5m'; // string | Interval time between data points
 
 $logger->execute('Проверка на наличие пары в gate.io');
@@ -36,12 +33,12 @@ $diffSumProc      = 100 - (($sumBefore * 100) / $sumNow);
 $logger->execute('Считаем процент...');
 
 $result = [
-    'buy'      => $toCurrency,
-    'sell' => $inCurrency,
-    'sum ' . $limit . ' minute back' => $sumBefore,
-    'sum now'  => $sumNow,
-    'diff sum' => $diffSum,
-    'diff proc' => $diffSumProc . '%',
+    'Купить'      => $toCurrency,
+    'Продать' => $inCurrency,
+    'Стоимость 5 минут назад' => $sumBefore,
+    'Стоимость сейчас'  => $sumNow,
+    'Разница суммы' => $diffSum,
+    'Разница в процентах' => $diffSumProc . '%',
 ];
 
 $logger->execute(json_encode($result));
