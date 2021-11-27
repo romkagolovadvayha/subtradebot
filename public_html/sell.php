@@ -38,13 +38,13 @@ foreach ($listAllOpenOrders as $openOrders) {
         }
         $diffMaxSumProc = 100 - (($maxPrice * 100) / $sumNow);
         $diffSumProc = 100 - (($oldSum * 100) / $sumNow);
-        $logger->execute("Условие $diffSumProc < -5");
-        $logger->execute("Условие MAX $diffMaxSumProc < -5");
+        $logger->execute("Условие от цены покупки {$diffSumProc}$ < -5$");
+        $logger->execute("Условие максимума ({$diffMaxSumProc}% < -5%)");
       	// sell_proc_max * (-1) (положительное число)
         if ($diffSumProc < -5 || $diffMaxSumProc < -5) {
-            $newSum = $sumNow * 0.995; // sell_proc_price
-            $logger->execute("Продаем пару $pair");
-            $logger->execute("Купили за $oldSum, текущая за $sumNow, продаем за $newSum");
+            $newSum = $sumNow * 0.993; // sell_proc_price
+            $logger->execute("Создаем ордер на продажу {$pair}...");
+            $logger->execute("Купили за {$oldSum}$, текущая за {$sumNow}$, продаем за {$newSum}$");
             $apiInstance->cancelOrder($order->getId(), $pair);
             $order = (new \GateApi\Model\Order())
                     ->setAmount($order->getAmount())
@@ -56,8 +56,8 @@ foreach ($listAllOpenOrders as $openOrders) {
                 $logger->execute("Стоп торги по паре $pair, выставляем ордер на продажу!");
             } catch (\Exception $e) {
                 $logger->execute("Ошибка при создании ордера на продажу!");
-                $apiInstance->createOrder($order);
                 $logger->execute($e->getCode() . ": " . $e->getMessage());
+                $apiInstance->createOrder($order);
             }
         }
         \TRADEBOT\Telegram::send($logger->getTotalLogs());
