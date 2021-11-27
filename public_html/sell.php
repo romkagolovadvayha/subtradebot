@@ -38,7 +38,7 @@ foreach ($listAllOpenOrders as $openOrders) {
         }
         $diffMaxSumProc = 100 - (($maxPrice * 100) / $sumNow);
         $diffSumProc = 100 - (($oldSum * 100) / $sumNow);
-        $logger->execute("Условие от цены покупки {$diffSumProc}$ < -5$");
+        $logger->execute("Условие от цены покупки {$diffSumProc}% < -5%");
         $logger->execute("Условие максимума ({$diffMaxSumProc}% < -5%)");
       	// sell_proc_max * (-1) (положительное число)
         if ($diffSumProc < -5 || $diffMaxSumProc < -5) {
