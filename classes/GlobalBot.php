@@ -19,4 +19,21 @@ class GlobalBot
         curl_close($ch);
         return json_decode($result, 1);
     }
+
+    public static function getRate($currency)
+    {
+        $config = \TRADEBOT\Config::getInstance();
+        $url = $config->settingApp->bot_api . '/getRate.php';
+        $post = [
+            'hash' => $config->settingApp->message_hash,
+            'currency' => $currency,
+        ];
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+        curl_close($ch);
+        return json_decode($result, 1);
+    }
 }

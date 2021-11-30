@@ -24,13 +24,19 @@ try {
 foreach ($listAllOpenOrders as $openOrders) {
     $pair = $openOrders->getCurrencyPair();
     $pairTo = explode('_', $pair)[0];
-    $associate_array['currency_pair'] = $pair; // string | Currency pair
-    $associate_array['limit'] = 2; // int | Maximum recent data points returned. `limit` is conflicted with `from` and `to`. If either `from` or `to` is specified, request will be rejected.
-    $associate_array['interval'] = '10s'; // string | Interval time between data points
-    $history = $apiInstance->listMyTrades($associate_array);
-    $oldSum = $history[0]->getPrice();
-    $listCandlesticks = $apiInstance->listCandlesticks($associate_array);
-    $sumNow = $listCandlesticks[count($listCandlesticks) - 1][2];
+    $rates = \TRADEBOT\GlobalBot::getRate($pairTo);
+    if (empty($rates['buy'])) {
+        $logger->execute("Ошибка при получении ставок по паре $pair");
+        exit;
+    }
+    try {
+        $sumNow = $rates['rate']['rate'];
+    } catch (\Exception $e) {
+        $logger->execute("Ошибка при получении курса $pair");
+        $logger->execute($e->getCode() . ": " . $e->getMessage());
+        exit;
+    }
+    $oldSum = $rates['buy']['price'];
     foreach ($openOrders->getOrders() as $order) {
         $maxPrice = \TRADEBOT\SumMax::get();
         if ($maxPrice < $sumNow) {

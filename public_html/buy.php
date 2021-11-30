@@ -14,20 +14,24 @@ $inCurrency  = $_REQUEST['in'];
 $toCurrency  = $_REQUEST['to'];
 $procMax     = 30; // buy_check_proc_max
 $procMin     = -10; // buy_check_proc_min
-
 $pair        = $toCurrency . '_' . $inCurrency;
-
-$associate_array['currency_pair'] = $pair; // string | Currency pair
-$associate_array['limit'] = 2; // int | Maximum recent data points returned. `limit` is conflicted with `from` and `to`. If either `from` or `to` is specified, request will be rejected.
-$associate_array['interval']      = '5m'; // string | Interval time between data points
-
 $logger->execute("Проверка на наличие пары в gate.io...");
 $logger->execute("Пара $pair существует");
 
+$rates = \TRADEBOT\GlobalBot::getRate($toCurrency);
+if (empty($rates['buy'])) {
+    $logger->execute("Ошибка при получении ставок по паре $pair");
+    exit;
+}
 // считаем нужно ли купить
-$listCandlesticks = $apiInstance->listCandlesticks($associate_array);
-$sumBefore        = $listCandlesticks[0][2];
-$sumNow           = $listCandlesticks[count($listCandlesticks) - 1][2];
+try {
+    $sumBefore        = $rates['oldRate']['rate'];
+    $sumNow           = $rates['rate']['rate'];
+} catch (\Exception $e) {
+    $logger->execute("Ошибка при получении курса $pair");
+    $logger->execute($e->getCode() . ": " . $e->getMessage());
+    exit;
+}
 $diffSum          = $sumNow - $sumBefore;
 $diffSumProc      = 100 - (($sumBefore * 100) / $sumNow);
 
